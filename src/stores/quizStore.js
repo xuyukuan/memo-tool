@@ -31,6 +31,8 @@ export const useQuizStore = defineStore('quiz', () => {
     tags: [],
     favoriteOnly: false
   })
+  // 标记练习是否已开始（用于决定是否增加使用次数）
+  const isQuizStarted = ref(false)
 
   // 计算属性
   const progress = computed(() => {
@@ -134,10 +136,7 @@ export const useQuizStore = defineStore('quiz', () => {
   async function loadAndStartQuiz(quizId) {
     const fullQuiz = await quizOperations.getQuizById(quizId)
     if (fullQuiz) {
-      // 更新使用统计
-      await quizOperations.incrementUsage(quizId)
-      
-      // 设置数据
+      // 不在这里增加使用次数，完成练习时才增加
       quizData.value = {
         id: fullQuiz.id,
         title: fullQuiz.name,
@@ -146,6 +145,7 @@ export const useQuizStore = defineStore('quiz', () => {
         items: fullQuiz.items
       }
       selectedItems.value = [...fullQuiz.items]
+      isQuizStarted.value = true
       
       // 直接开始练习
       startQuiz()
@@ -158,6 +158,23 @@ export const useQuizStore = defineStore('quiz', () => {
     quizData.value = data
     selectedItems.value = [...data.items]
     currentPhase.value = 'select'
+  }
+  
+  // 从已保存的默写集进入选择阶段
+  async function selectQuiz(quizId) {
+    const fullQuiz = await quizOperations.getQuizById(quizId)
+    if (fullQuiz) {
+      quizData.value = {
+        id: fullQuiz.id,
+        title: fullQuiz.name,
+        type: fullQuiz.type,
+        description: fullQuiz.description,
+        items: fullQuiz.items
+      }
+      selectedItems.value = [...fullQuiz.items]
+      currentPhase.value = 'select'
+    }
+    return fullQuiz
   }
   
   function startQuiz() {
@@ -233,8 +250,19 @@ export const useQuizStore = defineStore('quiz', () => {
       showAnswer.value = false
       wrongItems.value = []
     } else {
+      // 完成时增加使用次数
+      if (quizData.value?.id && isQuizStarted.value) {
+        quizOperations.incrementUsage(quizData.value.id)
+        isQuizStarted.value = false
+      }
       currentPhase.value = 'complete'
     }
+  }
+  
+  // 中途退出练习（不增加使用次数）
+  function exitQuizWithoutComplete() {
+    isQuizStarted.value = false
+    reset()
   }
   
   function reset() {
@@ -334,6 +362,7 @@ export const useQuizStore = defineStore('quiz', () => {
     progress,
     isQuizComplete,
     canProceedToNextRound,
+    isQuizStarted,
     
     // 持久化状态
     savedQuizzes,
@@ -348,9 +377,11 @@ export const useQuizStore = defineStore('quiz', () => {
     importAndSave,
     loadAndStartQuiz,
     loadQuizData,
+    selectQuiz,
     startQuiz,
     markAnswer,
     reset,
+    exitQuizWithoutComplete,
     toggleItemSelection,
     selectAllItems,
     deselectAllItems,

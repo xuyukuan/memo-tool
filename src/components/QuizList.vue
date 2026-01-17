@@ -173,6 +173,10 @@ function toggleSelectAll() {
 }
 
 function startQuiz() {
+  // Request fullscreen immediately on user click (required by browser security)
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {})
+  }
   quizStore.startQuiz()
 }
 

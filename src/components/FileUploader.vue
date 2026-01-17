@@ -132,7 +132,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useQuizStore } from '@/stores/quizStore'
 import { useThemeStore } from '@/stores/themeStore'
-import { validateQuizJSON } from '@/utils/jsonValidator'
+import { validateQuizJSON } from '@/utils/enhancedJsonValidator'
 
 const quizStore = useQuizStore()
 const themeStore = useThemeStore()
@@ -171,16 +171,12 @@ async function handleDrop(event) {
 }
 
 function triggerFileSelect() {
-  console.log('triggerFileSelect called, fileInput.value:', fileInput.value)
   if (fileInput.value) {
     fileInput.value.click()
-  } else {
-    console.error('File input ref is not available')
   }
 }
 
 async function handleFileSelect(event) {
-  console.log('handleFileSelect called')
   const file = event.target.files[0]
   processFile(file)
   event.target.value = ''

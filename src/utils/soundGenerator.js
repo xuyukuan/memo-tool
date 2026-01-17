@@ -36,9 +36,3 @@ export function playCompleteSound() {
     setTimeout(() => playTone(freq, 0.15, 'sine'), i * 100)
   })
 }
-
-export function playNextRoundSound() {
-  playTone(440, 0.15, 'sine')
-  setTimeout(() => playTone(554.37, 0.15, 'sine'), 150)
-  setTimeout(() => playTone(659.25, 0.25, 'sine'), 300)
-}

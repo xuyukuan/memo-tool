@@ -133,9 +133,7 @@ function handleKeydown(event) {
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
-      console.log('Fullscreen error:', err)
-    })
+    document.documentElement.requestFullscreen().catch(() => {})
   } else {
     document.exitFullscreen()
   }
@@ -146,7 +144,6 @@ function handleDataChanged() {
 }
 
 function handleEditQuiz(quiz) {
-  console.log('编辑默写集:', quiz)
   // TODO: 实现编辑功能
   alert('编辑功能开发中')
 }

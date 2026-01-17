@@ -166,6 +166,12 @@ function handleKeydown(event) {
         handleCorrect()
       }
       break
+    case 'Escape':
+      event.preventDefault()
+      if (confirm('确定要退出练习吗？')) {
+        quizStore.exitQuizWithoutComplete()
+      }
+      break
   }
 }
 

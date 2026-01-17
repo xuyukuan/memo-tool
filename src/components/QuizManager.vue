@@ -165,6 +165,17 @@
               <!-- 操作按钮 -->
               <div class="flex flex-col sm:flex-row items-center gap-2">
                 <button
+                  @click="selectQuiz(quiz.id)"
+                  class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  :class="themeStore.theme === 'dark' 
+                    ? 'bg-dark-700 hover:bg-dark-600 text-dark-200' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'"
+                >
+                  <span>📋</span>
+                  <span>选择练习</span>
+                </button>
+                
+                <button
                   @click="startQuiz(quiz.id)"
                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 transition-colors"
                 >
@@ -295,6 +306,11 @@ async function startQuiz(quizId) {
   emit('quizStarted')
 }
 
+async function selectQuiz(quizId) {
+  await quizStore.selectQuiz(quizId)
+  emit('quizStarted')
+}
+
 function handleImport() {
   fileInput.value?.click()
 }
@@ -319,7 +335,6 @@ async function handleFileSelect(event) {
     alert(`导入成功！共 ${validation.itemCount} 个默写项`)
   } catch (error) {
     alert('导入失败：' + error.message)
-    console.error('导入失败：', error)
   }
   
   event.target.value = ''
