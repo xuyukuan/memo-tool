@@ -2,8 +2,6 @@
   <div 
     class="min-h-screen transition-colors duration-300" 
     :class="themeStore.theme === 'dark' ? 'bg-dark-900' : 'bg-gray-50'"
-    @keydown="handleGlobalKeydown" 
-    tabindex="0"
   >
     <header 
       class="shadow-sm border-b transition-colors duration-300"
@@ -40,6 +38,15 @@
           >
             <span>⚙️</span>
             <span>数据管理</span>
+          </button>
+          <button
+            v-if="quizStore.currentPhase === 'quiz'"
+            @click="toggleFullscreen"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors"
+            :class="themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300 hover:bg-dark-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+            title="全屏模式"
+          >
+            <span>{{ isFullscreen ? '⬜' : '📺' }}</span>
           </button>
           <ShortcutsHelp v-if="quizStore.currentPhase === 'quiz'" />
           <ThemeToggle />
@@ -96,15 +103,41 @@ const themeStore = useThemeStore()
 
 const showLibrary = ref(false)
 const showImportExport = ref(false)
+const isFullscreen = ref(false)
 
 onMounted(() => {
   themeStore.initTheme()
   themeStore.setupSystemThemeListener()
+  document.addEventListener('fullscreenchange', handleFullscreenChange)
+  document.addEventListener('keydown', handleKeydown)
 })
 
-function handleGlobalKeydown(event) {
+onUnmounted(() => {
+  document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  document.removeEventListener('keydown', handleKeydown)
+})
+
+function handleFullscreenChange() {
+  isFullscreen.value = !!document.fullscreenElement
+}
+
+function handleKeydown(event) {
+  // Exit fullscreen on Escape
+  if (event.code === 'Escape' && document.fullscreenElement) {
+    document.exitFullscreen()
+  }
   if (event.code === 'Space' && quizStore.currentPhase === 'quiz') {
     event.preventDefault()
+  }
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.log('Fullscreen error:', err)
+    })
+  } else {
+    document.exitFullscreen()
   }
 }
 
@@ -118,7 +151,7 @@ function handleEditQuiz(quiz) {
   alert('编辑功能开发中')
 }
 
-function handleQuizStarted() {
+async function handleQuizStarted() {
   showLibrary.value = false
   // 直接开始练习（不经过选择页面）
   quizStore.startQuiz()

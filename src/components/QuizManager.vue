@@ -165,7 +165,7 @@
               <!-- 操作按钮 -->
               <div class="flex flex-col sm:flex-row items-center gap-2">
                 <button
-                  @click.stop="startQuiz(quiz.id)"
+                  @click="startQuiz(quiz.id)"
                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 transition-colors"
                 >
                   <span>▶️</span>
@@ -287,6 +287,10 @@ async function toggleFavorite(quizId) {
 }
 
 async function startQuiz(quizId) {
+  // Request fullscreen immediately on user click (required by browser security)
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {})
+  }
   await quizStore.loadAndStartQuiz(quizId)
   emit('quizStarted')
 }
