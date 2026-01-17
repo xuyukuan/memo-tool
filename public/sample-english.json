@@ -1,0 +1,67 @@
+{
+  "title": "英语四六级核心词汇默写",
+  "type": "english",
+  "description": "常用英语词汇中译英练习",
+  "items": [
+    {
+      "question": "n. 生活方式",
+      "answer": "lifestyle",
+      "pronunciation": "/ˈlaɪfstaɪl/",
+      "example": "a healthy lifestyle"
+    },
+    {
+      "question": "环境保护",
+      "answer": "environmental protection",
+      "pronunciation": "/ɪnˌvaɪrənˈmentl prəˈtekʃn/",
+      "example": "Environmental protection is crucial for our future."
+    },
+    {
+      "question": "n. 信息技术",
+      "answer": "information technology",
+      "pronunciation": "/ˌɪnfərˈmeɪʃn tekˈnɒlədʒi/",
+      "example": "IT industry is developing rapidly."
+    },
+    {
+      "question": "adj. 必不可少的",
+      "answer": "essential",
+      "pronunciation": "/ɪˈsenʃl/",
+      "example": "Water is essential for life."
+    },
+    {
+      "question": "v. 实现",
+      "answer": "achieve",
+      "pronunciation": "/əˈtʃiːv/",
+      "example": "You can achieve your goals through hard work."
+    },
+    {
+      "question": "n. 可持续发展",
+      "answer": "sustainable development",
+      "pronunciation": "/səˈsteɪnəbl dɪˈveləpmənt/",
+      "example": "Sustainable development is important for future generations."
+    },
+    {
+      "question": "v. 促进",
+      "answer": "promote",
+      "pronunciation": "/prəˈmoʊt/",
+      "example": "Exercise promotes good health."
+    },
+    {
+      "question": "n. 创新",
+      "answer": "innovation",
+      "pronunciation": "/ˌɪnəˈveɪʃn/",
+      "example": "Innovation drives economic growth."
+    },
+    {
+      "question": "adj. 全球性的",
+      "answer": "global",
+      "pronunciation": "/ˈɡloʊbl/",
+      "example": "Climate change is a global issue."
+    },
+    {
+      "question": "n. 教育质量",
+      "answer": "educational quality",
+      "pronunciation": "/ˌedʒuˈkeɪʃənl ˈkwɒləti/",
+      "example": "We need to improve educational quality."
+    }
+  ]
+}

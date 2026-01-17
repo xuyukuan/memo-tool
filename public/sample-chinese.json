@@ -1,0 +1,67 @@
+{
+  "title": "成语拼音默写练习",
+  "type": "chinese",
+  "description": "常用成语拼音练习",
+  "items": [
+    {
+      "question": "zhēn zhī zhuó jiàn",
+      "answer": "真知灼见",
+      "explanation": "真正知道，确实了解。形容见解透彻。",
+      "example": "他对经济形势有真知灼见。"
+    },
+    {
+      "question": "jīng zhàn jué lún",
+      "answer": "精湛绝伦",
+      "explanation": "精湛：精深。绝伦：没有能相比的。",
+      "example": "他的棋艺精湛绝伦。"
+    },
+    {
+      "question": "yī mù liǎo rán",
+      "answer": "一目了然",
+      "explanation": "一眼就看得很清楚。",
+      "example": "从这张图表中可以一目了然地看出趋势。"
+    },
+    {
+      "question": "hū zhī yù chū",
+      "answer": "呼之欲出",
+      "explanation": "形容人像画得真切，也指文学作品生动传神。",
+      "example": "这个角色的形象栩栩如生，呼之欲出。"
+    },
+    {
+      "question": "bù sī qí jiě",
+      "answer": "不解之缘",
+      "explanation": "指缘分深厚，无法分离。",
+      "example": "他与音乐结下了不解之缘。"
+    },
+    {
+      "question": "xīn wú páng wù",
+      "answer": "心无旁骛",
+      "explanation": "心思没有另外的追求。形容心思集中，专心致志。",
+      "example": "他学习时总是心无旁骛。"
+    },
+    {
+      "question": "qiān zāi bǎi liàn",
+      "answer": "千锤百炼",
+      "explanation": "比喻经历多次艰苦斗争的锻炼和考验。",
+      "example": "这篇作品是千锤百炼的结晶。"
+    },
+    {
+      "question": "xīn kǒu rú yī",
+      "answer": "心口如一",
+      "explanation": "心里想的和嘴里说的一样。形容诚实直爽。",
+      "example": "他一向心口如一，从不说谎。"
+    },
+    {
+      "question": "tiān dì hóng kuān",
+      "answer": "天高地厚",
+      "explanation": "形容事情艰巨或复杂。",
+      "example": "这个项目的难度天高地厚。"
+    },
+    {
+      "question": "shén cái yì biàn",
+      "answer": "神采奕奕",
+      "explanation": "形容精神饱满，容光焕发。",
+      "example": "他今天神采奕奕，精神很好。"
+    }
+  ]
+}
