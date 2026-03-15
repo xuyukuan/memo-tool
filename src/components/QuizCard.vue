@@ -33,6 +33,27 @@
         class="p-12 text-center min-h-[300px] flex flex-col justify-center items-center transition-opacity duration-300"
         :class="{ 'opacity-50': quizStore.showAnswer }"
       >
+        <!-- Pronunciation Toggle -->
+        <div class="self-end mb-4" v-if="quizStore.currentItem?.pronunciation">
+          <button
+            @click="quizStore.showPronunciation = !quizStore.showPronunciation"
+            class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1"
+            :class="[
+              quizStore.showPronunciation
+                ? themeStore.theme === 'dark'
+                  ? 'bg-primary-900/50 text-primary-300'
+                  : 'bg-primary-100 text-primary-700'
+                : themeStore.theme === 'dark'
+                  ? 'bg-dark-700 text-dark-300 hover:bg-dark-600'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            ]"
+            :title="quizStore.showPronunciation ? '隐藏发音' : '显示发音'"
+          >
+            <span>{{ quizStore.showPronunciation ? '🔊' : '🔇' }}</span>
+            <span>发音</span>
+          </button>
+        </div>
+
         <p 
           class="text-sm mb-4"
           :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-500'"
@@ -46,7 +67,7 @@
           {{ quizStore.currentItem?.question }}
         </h2>
         <p
-          v-if="quizStore.currentItem?.pronunciation"
+          v-if="quizStore.currentItem?.pronunciation && quizStore.showPronunciation"
           class="text-lg transition-colors"
           :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-400'"
         >
