@@ -122,8 +122,9 @@ function handleFullscreenChange() {
 }
 
 function handleKeydown(event) {
-  // Exit fullscreen on Escape
-  if (event.code === 'Escape' && document.fullscreenElement) {
+  // Only handle Escape to exit fullscreen when NOT in quiz mode
+  // (QuizCard handles Escape for exit confirmation)
+  if (event.code === 'Escape' && document.fullscreenElement && quizStore.currentPhase !== 'quiz') {
     document.exitFullscreen()
   }
   if (event.code === 'Space' && quizStore.currentPhase === 'quiz') {
