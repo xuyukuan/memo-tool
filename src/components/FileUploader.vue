@@ -133,6 +133,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useQuizStore } from '@/stores/quizStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { validateQuizJSON } from '@/utils/enhancedJsonValidator'
+import { BaseButton } from '@/components/ui'
 
 const quizStore = useQuizStore()
 const themeStore = useThemeStore()

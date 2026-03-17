@@ -1,13 +1,13 @@
 <template>
   <div class="max-w-3xl mx-auto">
     <div class="text-center mb-8">
-      <h2 
+      <h2
         class="text-2xl font-bold mb-2"
         :class="themeStore.theme === 'dark' ? 'text-dark-100' : 'text-gray-800'"
       >
         {{ quizStore.quizData?.title }}
       </h2>
-      <p 
+      <p
         class="transition-colors"
         :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-600'"
       >
@@ -15,29 +15,15 @@
         <span class="font-bold text-primary-600">{{ quizStore.selectedItems.length }}</span> 个
       </p>
     </div>
-    
-    <div class="mb-6 flex gap-4">
-      <div class="flex-1 relative">
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="搜索题目..."
-          class="w-full px-4 py-3 rounded-xl transition-colors focus:outline-none focus:ring-2"
-          :class="[
-            themeStore.theme === 'dark' 
-              ? 'bg-dark-800 border-dark-700 text-dark-100 placeholder-dark-400 focus:ring-primary-500' 
-              : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400 focus:ring-primary-600'
-          ]"
-        >
-        <span 
-          class="absolute right-4 top-1/2 transform -translate-y-1/2"
-          :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-400'"
-        >
-          🔍
-        </span>
-      </div>
+
+    <div class="mb-6">
+      <BaseInput
+        v-model="searchQuery"
+        placeholder="搜索题目..."
+        icon="🔍"
+      />
     </div>
-    
+
     <div class="flex justify-between items-center mb-4">
       <button
         @click="toggleSelectAll"
@@ -45,14 +31,14 @@
       >
         {{ isAllSelected ? '取消全选' : '全选' }}
       </button>
-      <span 
+      <span
         class="text-sm transition-colors"
         :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-500'"
       >
         筛选: {{ filteredItems.length }} 项
       </span>
     </div>
-    
+
     <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-2">
       <TransitionGroup name="list">
         <div
@@ -76,61 +62,46 @@
               :class="[
                 isItemSelected(item.id)
                   ? 'bg-primary-500 border-primary-500'
-                  : themeStore.theme === 'dark' 
-                    ? 'border-dark-600' 
+                  : themeStore.theme === 'dark'
+                    ? 'border-dark-600'
                     : 'border-gray-300'
               ]"
             >
               <span v-if="isItemSelected(item.id)" class="text-white text-sm">✓</span>
             </div>
             <div class="flex-1">
-              <p 
+              <p
                 class="font-medium transition-colors"
                 :class="themeStore.theme === 'dark' ? 'text-dark-100' : 'text-gray-800'"
               >
                 {{ item.question }}
               </p>
-              <p 
-                v-if="item.example" 
+              <p
+                v-if="item.example"
                 class="text-sm mt-1 transition-colors"
                 :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-500'"
               >
                 {{ item.example }}
               </p>
             </div>
-            <span
-              class="px-2 py-1 rounded text-xs font-medium"
-              :class="quizStore.quizData?.type === 'english' 
-                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' 
-                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'"
-            >
+            <Badge :variant="quizStore.quizData?.type === 'english' ? 'english' : 'chinese'">
               {{ quizStore.quizData?.type === 'english' ? 'EN' : 'CN' }}
-            </span>
+            </Badge>
           </div>
         </div>
       </TransitionGroup>
     </div>
-    
+
     <div class="mt-8 flex justify-center gap-4">
-      <button
-        @click="goBack"
-        class="px-6 py-3 border rounded-xl transition-colors"
-        :class="themeStore.theme === 'dark' 
-          ? 'border-dark-600 text-dark-200 hover:bg-dark-800' 
-          : 'border-gray-300 text-gray-700 hover:bg-gray-50'"
-      >
+      <BaseButton variant="secondary" @click="goBack">
         返回上传
-      </button>
-      <button
-        @click="startQuiz"
+      </BaseButton>
+      <BaseButton
         :disabled="quizStore.selectedItems.length === 0"
-        class="px-8 py-3 rounded-xl text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="themeStore.theme === 'dark' 
-          ? 'bg-primary-700 hover:bg-primary-600' 
-          : 'bg-primary-600 hover:bg-primary-700'"
+        @click="startQuiz"
       >
         开始默写 ({{ quizStore.selectedItems.length }}个)
-      </button>
+      </BaseButton>
     </div>
   </div>
 </template>
@@ -139,6 +110,7 @@
 import { ref, computed } from 'vue'
 import { useQuizStore } from '@/stores/quizStore'
 import { useThemeStore } from '@/stores/themeStore'
+import { BaseButton, BaseInput, Badge } from '@/components/ui'
 
 const quizStore = useQuizStore()
 const themeStore = useThemeStore()
@@ -146,7 +118,7 @@ const searchQuery = ref('')
 
 const filteredItems = computed(() => {
   if (!searchQuery.value) return quizStore.quizData?.items || []
-  
+
   const query = searchQuery.value.toLowerCase()
   return quizStore.quizData?.items.filter(item =>
     item.question.toLowerCase().includes(query) ||
