@@ -167,24 +167,14 @@
                 <!-- 英语模式方向选择 -->
                 <div v-if="quiz.type === 'english'" class="flex items-center gap-1 mr-2">
                   <button
-                    @click.stop="setDirection(quiz.id, 'c2e')"
+                    v-for="option in directionOptions"
+                    :key="option.direction"
+                    @click.stop="setDirection(quiz.id, option.direction)"
                     class="px-2 py-1 rounded text-xs font-medium transition-colors"
-                    :class="getDirection(quiz.id) === 'c2e'
-                      ? 'bg-primary-500 text-white'
-                      : (themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300' : 'bg-gray-200 text-gray-600')"
-                    title="中文到英文"
+                    :class="getDirectionButtonClass(quiz.id, option.direction)"
+                    :title="option.direction === 'c2e' ? '中文到英文' : '英文到中文'"
                   >
-                    中→英
-                  </button>
-                  <button
-                    @click.stop="setDirection(quiz.id, 'e2c')"
-                    class="px-2 py-1 rounded text-xs font-medium transition-colors"
-                    :class="getDirection(quiz.id) === 'e2c'
-                      ? 'bg-primary-500 text-white'
-                      : (themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300' : 'bg-gray-200 text-gray-600')"
-                    title="英文到中文"
-                  >
-                    英→中
+                    {{ option.label }}
                   </button>
                 </div>
 
@@ -211,7 +201,7 @@
                   <button
                     @click.stop="$emit('editQuiz', quiz)"
                     class="p-2 rounded-lg transition-colors"
-                    :class="themeStore.theme === 'dark' ? 'hover:bg-dark-700' : 'hover:bg-gray-100'"
+                    :class="getIconButtonThemeClass()"
                     title="编辑"
                   >
                     ✏️
@@ -219,7 +209,7 @@
                   <button
                     @click.stop="exportQuiz(quiz.id)"
                     class="p-2 rounded-lg transition-colors"
-                    :class="themeStore.theme === 'dark' ? 'hover:bg-dark-700' : 'hover:bg-gray-100'"
+                    :class="getIconButtonThemeClass()"
                     title="导出"
                   >
                     📤
@@ -227,7 +217,7 @@
                   <button
                     @click.stop="confirmDelete(quiz)"
                     class="p-2 rounded-lg transition-colors"
-                    :class="themeStore.theme === 'dark' ? 'hover:bg-dark-700' : 'hover:bg-gray-100'"
+                    :class="getIconButtonThemeClass()"
                     title="删除"
                   >
                     🗑️
@@ -300,10 +290,25 @@ const selectedQuizzes = ref([])
 const selectedCategoryId = ref(null)
 const directionMap = ref({})
 
+const directionOptions = [
+  { direction: 'c2e', label: '中→英' },
+  { direction: 'e2c', label: '英→中' }
+]
+
 const filteredQuizzes = computed(() => quizStore.filteredQuizzes)
 const categories = computed(() => quizStore.categories)
 const savedQuizzes = computed(() => quizStore.savedQuizzes)
 const favoriteCount = computed(() => savedQuizzes.value.filter(q => q.isFavorite).length)
+
+// Theme helper functions
+function getButtonThemeClass(isActive) {
+  if (isActive) return 'bg-primary-500 text-white'
+  return themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300' : 'bg-gray-200 text-gray-600'
+}
+
+function getIconButtonThemeClass() {
+  return themeStore.theme === 'dark' ? 'hover:bg-dark-700' : 'hover:bg-gray-100'
+}
 
 onMounted(() => {
   quizStore.loadPersistedData()
@@ -323,11 +328,16 @@ async function toggleFavorite(quizId) {
 }
 
 function setDirection(quizId, direction) {
-  directionMap.value[quizId] = direction
+  directionMap.value = { ...directionMap.value, [quizId]: direction }
 }
 
 function getDirection(quizId) {
   return directionMap.value[quizId] || 'c2e'
+}
+
+function getDirectionButtonClass(quizId, direction) {
+  const isActive = getDirection(quizId) === direction
+  return getButtonThemeClass(isActive)
 }
 
 async function startQuiz(quizId) {

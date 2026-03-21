@@ -27,15 +27,15 @@
         :class="{ 'opacity-50': quizStore.showAnswer }"
       >
         <!-- Helper Toggle (音标/解释) -->
-        <div class="self-end mb-4" v-if="(isEnglish && quizStore.currentItem?.pronunciation) || (!isEnglish && quizStore.currentItem?.explanation)">
+        <div class="self-end mb-4" v-if="shouldShowHelper">
           <BaseButton
             size="sm"
             :variant="quizStore.showHelper ? 'primary' : 'ghost'"
             @click="quizStore.showHelper = !quizStore.showHelper"
-            :title="quizStore.showHelper ? (isEnglish ? '隐藏音标' : '隐藏解释') : (isEnglish ? '显示音标' : '显示解释')"
+            :title="helperTitle"
           >
-            <span>{{ isEnglish ? '📖' : '💡' }}</span>
-            <span>{{ isEnglish ? '音标' : '解释' }}</span>
+            <span>{{ helperIcon }}</span>
+            <span>{{ helperLabel }}</span>
           </BaseButton>
         </div>
 
@@ -43,13 +43,13 @@
           class="text-sm mb-4"
           :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-500'"
         >
-          {{ isE2C ? '请翻译以下内容' : (quizStore.quizData?.type === 'english' ? '请翻译以下内容' : '请写出对应的文字') }}
+          {{ isEnglish ? '请翻译以下内容' : '请写出对应的文字' }}
         </p>
         <h2
           class="text-3xl font-bold mb-4 transition-all duration-300"
           :class="themeStore.theme === 'dark' ? 'text-dark-100' : 'text-gray-800'"
         >
-          {{ isE2C ? quizStore.currentItem?.answer : quizStore.currentItem?.question }}
+          {{ questionDisplay }}
         </h2>
         <p
           v-if="quizStore.showHelper && quizStore.currentItem?.pronunciation && isEnglish"
@@ -66,11 +66,11 @@
           💡 {{ quizStore.currentItem.explanation }}
         </p>
         <p
-          v-if="isE2C && quizStore.currentItem?.example"
+          v-if="showExampleInQuestion"
           class="italic mt-4 transition-colors"
           :class="themeStore.theme === 'dark' ? 'text-dark-300' : 'text-gray-600'"
         >
-          "{{ quizStore.currentItem.example }}"
+          "{{ currentItem?.example }}"
         </p>
       </div>
 
@@ -94,14 +94,14 @@
             class="text-4xl font-bold mb-4 transition-all duration-300"
             :class="themeStore.theme === 'dark' ? 'text-primary-400' : 'text-primary-700'"
           >
-            {{ isE2C ? quizStore.currentItem?.question : quizStore.currentItem?.answer }}
+            {{ answerDisplay }}
           </h2>
           <p
-            v-if="!isE2C && quizStore.currentItem?.example"
+            v-if="showExampleInAnswer"
             class="italic mt-4 transition-colors"
             :class="themeStore.theme === 'dark' ? 'text-dark-300' : 'text-gray-600'"
           >
-            "{{ quizStore.currentItem.example }}"
+            "{{ currentItem?.example }}"
           </p>
         </div>
       </Transition>
@@ -148,7 +148,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useQuizStore } from '@/stores/quizStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { playRevealSound, playCorrectSound, playWrongSound } from '@/utils/soundGenerator'
@@ -160,6 +160,24 @@ const themeStore = useThemeStore()
 
 const isEnglish = computed(() => quizStore.quizData?.type === 'english')
 const isE2C = computed(() => isEnglish.value && quizStore.quizDirection === 'e2c')
+const shouldShowHelper = computed(() => {
+  if (isEnglish.value) return !!quizStore.currentItem?.pronunciation
+  return !!quizStore.currentItem?.explanation
+})
+
+// Helper related computed properties
+const helperIcon = computed(() => isEnglish.value ? '📖' : '💡')
+const helperLabel = computed(() => isEnglish.value ? '音标' : '解释')
+const helperTitle = computed(() => `${quizStore.showHelper ? '隐藏' : '显示'}${helperLabel.value}`)
+
+// Question/Answer display computed properties
+const currentItem = computed(() => quizStore.currentItem)
+const questionDisplay = computed(() => isE2C.value ? currentItem.value?.answer : currentItem.value?.question)
+const answerDisplay = computed(() => isE2C.value ? currentItem.value?.question : currentItem.value?.answer)
+
+// Example display computed properties
+const showExampleInQuestion = computed(() => isE2C.value && currentItem.value?.example)
+const showExampleInAnswer = computed(() => !isE2C.value && currentItem.value?.example)
 
 function handleKeydown(event) {
   if (quizStore.currentPhase !== 'quiz') return
