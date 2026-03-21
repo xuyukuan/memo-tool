@@ -164,17 +164,41 @@
 
               <!-- 操作按钮 -->
               <div class="flex flex-col sm:flex-row items-center gap-2">
+                <!-- 英语模式方向选择 -->
+                <div v-if="quiz.type === 'english'" class="flex items-center gap-1 mr-2">
+                  <button
+                    @click.stop="setDirection(quiz.id, 'c2e')"
+                    class="px-2 py-1 rounded text-xs font-medium transition-colors"
+                    :class="getDirection(quiz.id) === 'c2e'
+                      ? 'bg-primary-500 text-white'
+                      : (themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300' : 'bg-gray-200 text-gray-600')"
+                    title="中文到英文"
+                  >
+                    中→英
+                  </button>
+                  <button
+                    @click.stop="setDirection(quiz.id, 'e2c')"
+                    class="px-2 py-1 rounded text-xs font-medium transition-colors"
+                    :class="getDirection(quiz.id) === 'e2c'
+                      ? 'bg-primary-500 text-white'
+                      : (themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300' : 'bg-gray-200 text-gray-600')"
+                    title="英文到中文"
+                  >
+                    英→中
+                  </button>
+                </div>
+
                 <button
                   @click="selectQuiz(quiz.id)"
                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                  :class="themeStore.theme === 'dark' 
-                    ? 'bg-dark-700 hover:bg-dark-600 text-dark-200' 
+                  :class="themeStore.theme === 'dark'
+                    ? 'bg-dark-700 hover:bg-dark-600 text-dark-200'
                     : 'bg-gray-100 hover:bg-gray-200 text-gray-700'"
                 >
                   <span>📋</span>
                   <span>选择练习</span>
                 </button>
-                
+
                 <button
                   @click="startQuiz(quiz.id)"
                   class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 transition-colors"
@@ -274,6 +298,7 @@ const themeStore = useThemeStore()
 const fileInput = ref(null)
 const selectedQuizzes = ref([])
 const selectedCategoryId = ref(null)
+const directionMap = ref({})
 
 const filteredQuizzes = computed(() => quizStore.filteredQuizzes)
 const categories = computed(() => quizStore.categories)
@@ -297,16 +322,28 @@ async function toggleFavorite(quizId) {
   await quizStore.toggleFavorite(quizId)
 }
 
+function setDirection(quizId, direction) {
+  directionMap.value[quizId] = direction
+}
+
+function getDirection(quizId) {
+  return directionMap.value[quizId] || 'c2e'
+}
+
 async function startQuiz(quizId) {
   // Request fullscreen immediately on user click (required by browser security)
   if (!document.fullscreenElement) {
     document.documentElement.requestFullscreen().catch(() => {})
   }
+  // 设置练习方向
+  quizStore.quizDirection = getDirection(quizId)
   await quizStore.loadAndStartQuiz(quizId)
   emit('quizStarted')
 }
 
 async function selectQuiz(quizId) {
+  // 设置练习方向
+  quizStore.quizDirection = getDirection(quizId)
   await quizStore.selectQuiz(quizId)
   emit('quizStarted')
 }

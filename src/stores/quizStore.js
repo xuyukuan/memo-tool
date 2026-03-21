@@ -37,6 +37,9 @@ export const useQuizStore = defineStore('quiz', () => {
   // 辅助信息显示控制（英语模式：音标，语文模式：解释）
   const showHelper = ref(false)
 
+  // 练习方向：'c2e' 中文到英文（默认），'e2c' 英文到中文
+  const quizDirection = ref('c2e')
+
   // 计算属性
   const progress = computed(() => {
     if (quizQueue.value.length === 0) return 0
@@ -278,6 +281,7 @@ export const useQuizStore = defineStore('quiz', () => {
     showAnswer.value = false
     roundNumber.value = 1
     wrongItems.value = []
+    quizDirection.value = 'c2e'
     stats.value = {
       total: 0,
       correct: 0,
@@ -367,7 +371,8 @@ export const useQuizStore = defineStore('quiz', () => {
     canProceedToNextRound,
     isQuizStarted,
     showHelper,
-     
+    quizDirection,
+
     // 持久化状态
     savedQuizzes,
     categories,
