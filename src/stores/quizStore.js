@@ -34,8 +34,8 @@ export const useQuizStore = defineStore('quiz', () => {
   // 标记练习是否已开始（用于决定是否增加使用次数）
   const isQuizStarted = ref(false)
   
-  // pronunciation 显示控制
-  const showPronunciation = ref(false)
+  // 辅助信息显示控制（英语模式：音标，语文模式：解释）
+  const showHelper = ref(false)
 
   // 计算属性
   const progress = computed(() => {
@@ -366,7 +366,7 @@ export const useQuizStore = defineStore('quiz', () => {
     isQuizComplete,
     canProceedToNextRound,
     isQuizStarted,
-    showPronunciation,
+    showHelper,
      
     // 持久化状态
     savedQuizzes,

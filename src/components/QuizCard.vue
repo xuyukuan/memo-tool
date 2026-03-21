@@ -26,16 +26,16 @@
         class="p-12 text-center min-h-[300px] flex flex-col justify-center items-center transition-opacity duration-300"
         :class="{ 'opacity-50': quizStore.showAnswer }"
       >
-        <!-- Pronunciation Toggle -->
-        <div class="self-end mb-4" v-if="quizStore.currentItem?.pronunciation">
+        <!-- Helper Toggle (音标/解释) -->
+        <div class="self-end mb-4" v-if="quizStore.currentItem?.pronunciation || quizStore.currentItem?.explanation">
           <BaseButton
             size="sm"
-            :variant="quizStore.showPronunciation ? 'primary' : 'ghost'"
-            @click="quizStore.showPronunciation = !quizStore.showPronunciation"
-            :title="quizStore.showPronunciation ? '隐藏发音' : '显示发音'"
+            :variant="quizStore.showHelper ? 'primary' : 'ghost'"
+            @click="quizStore.showHelper = !quizStore.showHelper"
+            :title="quizStore.showHelper ? (isEnglish ? '隐藏音标' : '隐藏解释') : (isEnglish ? '显示音标' : '显示解释')"
           >
-            <span>{{ quizStore.showPronunciation ? '🔊' : '🔇' }}</span>
-            <span>发音</span>
+            <span>{{ isEnglish ? '📖' : '💡' }}</span>
+            <span>{{ isEnglish ? '音标' : '解释' }}</span>
           </BaseButton>
         </div>
 
@@ -52,11 +52,18 @@
           {{ quizStore.currentItem?.question }}
         </h2>
         <p
-          v-if="quizStore.currentItem?.pronunciation && quizStore.showPronunciation"
+          v-if="quizStore.showHelper && quizStore.currentItem?.pronunciation"
           class="text-lg transition-colors"
           :class="themeStore.theme === 'dark' ? 'text-dark-400' : 'text-gray-400'"
         >
           {{ quizStore.currentItem.pronunciation }}
+        </p>
+        <p
+          v-if="quizStore.showHelper && quizStore.currentItem?.explanation"
+          class="text-sm mt-2 transition-colors px-3 py-1 rounded"
+          :class="themeStore.theme === 'dark' ? 'bg-dark-700 text-dark-300' : 'bg-gray-100 text-gray-600'"
+        >
+          💡 {{ quizStore.currentItem.explanation }}
         </p>
       </div>
 
@@ -134,7 +141,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useQuizStore } from '@/stores/quizStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { playRevealSound, playCorrectSound, playWrongSound } from '@/utils/soundGenerator'
@@ -143,6 +150,8 @@ import ProgressBar from './ProgressBar.vue'
 
 const quizStore = useQuizStore()
 const themeStore = useThemeStore()
+
+const isEnglish = computed(() => quizStore.quizData?.type === 'english')
 
 function handleKeydown(event) {
   if (quizStore.currentPhase !== 'quiz') return
